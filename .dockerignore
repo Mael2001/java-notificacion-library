@@ -1,0 +1,36 @@
+# Build artifacts
+target/
+*.jar
+*.war
+*.ear
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+
+# Maven
+.m2/
+pom.xml.tag
+pom.xml.asc
+pom.xml.releaseBackup
+release.properties
+dependency-reduced-pom.xml
+
+# Other
+.env
+.classpath
+.project
+.settings/
+node_modules/

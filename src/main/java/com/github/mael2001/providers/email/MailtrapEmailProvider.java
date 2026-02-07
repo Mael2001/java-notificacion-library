@@ -2,7 +2,7 @@ package com.github.mael2001.providers.email;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.github.mael2001.channels.email.EmailNotification;
+import com.github.mael2001.channels.EmailNotification;
 import com.github.mael2001.client.GlobalConfigAware;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.RetryConfig;

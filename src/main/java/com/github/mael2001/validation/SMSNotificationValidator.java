@@ -1,6 +1,6 @@
 package com.github.mael2001.validation;
 
-import com.github.mael2001.channels.sms.SMSNotification;
+import com.github.mael2001.channels.SMSNotification;
 import com.github.mael2001.exceptions.ValidationException;
 import com.github.mael2001.validation.Validators.CommonValidator;
 

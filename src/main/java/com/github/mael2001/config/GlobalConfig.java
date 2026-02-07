@@ -7,4 +7,16 @@ public class GlobalConfig {
 	@Getter @Setter int connectionTimeout;
 	@Getter @Setter int readTimeout;
 	@Getter @Setter boolean enableAsync;
+
+	public GlobalConfig() {
+		this.connectionTimeout = 30;
+		this.readTimeout = 30;
+		this.enableAsync = true;
+	}
+
+	public GlobalConfig(int connectionTimeout, int readTimeout, boolean enableAsync) {
+		this.connectionTimeout = connectionTimeout;
+		this.readTimeout = readTimeout;
+		this.enableAsync = enableAsync;
+	}
 }

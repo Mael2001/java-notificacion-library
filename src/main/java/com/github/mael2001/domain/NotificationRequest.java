@@ -9,12 +9,12 @@ public interface NotificationRequest {
     NotificationChannel channel();
 
     default String correlationId() {
-        return null;
+        //Generate a radnom UUID or return null if not needed
+        return java.util.UUID.randomUUID().toString();
     }
 
     default Instant createdAt() {
         return Instant.now();
     }
 
-    default void validate() {}
 }

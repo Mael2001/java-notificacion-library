@@ -15,7 +15,7 @@ public class EmailValidator {
 		}
 
 		Pattern pattern = Pattern.compile(VALID_EMAIL_REGEX);
-		if (!pattern.matcher(email).matches()) {
+		if (email != null && !pattern.matcher(email).matches()) {
 			result.add("Invalid email address");
 		}
 

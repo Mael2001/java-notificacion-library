@@ -1,8 +1,8 @@
 package com.github.mael2001.client;
 
-import com.github.mael2001.channels.email.EmailNotification;
-import com.github.mael2001.channels.push.PushNotification;
-import com.github.mael2001.channels.sms.SMSNotification;
+import com.github.mael2001.channels.EmailNotification;
+import com.github.mael2001.channels.PushNotification;
+import com.github.mael2001.channels.SMSNotification;
 import com.github.mael2001.domain.NotificationEvent;
 import com.github.mael2001.domain.NotificationRequest;
 import com.github.mael2001.domain.NotificationResult;
@@ -63,8 +63,8 @@ class DefaultNotificationClient implements NotificationClient {
 			String defaultProvider = defaults.get(channel);
 
 			// Check if default provider is set
-			if (defaultProvider == null) {
-				throw new ValidationException("No default provider set for channel: " + channel);
+			if (defaultProvider == null || defaultProvider.isBlank()) {
+				throw new ValidationException("No default provider configured for channel: " + channel);
 			}
 
 			// Get the notifier for the channel and provider
@@ -84,7 +84,7 @@ class DefaultNotificationClient implements NotificationClient {
 			// Send the request and return the result
 			NotificationResult result = typed.send(request);
 
-			//Check if event publisher is set, if yes publish the event
+			// Check if event publisher is set, if yes publish the event
 			if (eventPublisher != null) {
 				// Gemerate random id for the event
 				String eventId = java.util.UUID.randomUUID().toString();

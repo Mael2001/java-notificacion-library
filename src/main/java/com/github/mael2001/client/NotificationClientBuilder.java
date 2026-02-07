@@ -19,6 +19,10 @@ public class NotificationClientBuilder {
     private RetryConfig retryConfig;
     private NotificationPublisher eventPublisher;
 
+    public static NotificationClientBuilder create() {
+        return new NotificationClientBuilder();
+    }
+
     public NotificationClientBuilder register(
             NotificationChannel channel,
             String name,

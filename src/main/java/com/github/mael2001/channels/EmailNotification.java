@@ -1,4 +1,4 @@
-package com.github.mael2001.channels.email;
+package com.github.mael2001.channels;
 import com.github.mael2001.domain.NotificationRequest;
 import com.github.mael2001.dto.NotificationChannel;
 

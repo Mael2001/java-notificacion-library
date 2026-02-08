@@ -70,6 +70,10 @@ class EventPublishingTest {
 				return "fake";
 			}
 
+			@Override
+			public boolean isAsync(){
+				return false;
+			}
 		};
 
 		// Act
@@ -135,6 +139,10 @@ class EventPublishingTest {
 				return "fake";
 			}
 
+			@Override
+			public boolean isAsync(){
+				return false;
+			}
 		};
 
 		// Act + Assert

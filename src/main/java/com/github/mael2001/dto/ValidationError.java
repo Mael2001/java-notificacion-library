@@ -1,9 +1,13 @@
 package com.github.mael2001.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ValidationError {
-	@Getter @Setter private String field;
-	@Getter @Setter private String message;
+	private String field;
+	private String message;
 }

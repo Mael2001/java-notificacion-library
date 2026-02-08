@@ -3,17 +3,17 @@ package com.github.mael2001.domain;
 import com.github.mael2001.dto.ErrorTypes;
 import com.github.mael2001.dto.NotificationChannel;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 public class NotificationResult {
 
-	@Getter @Setter private boolean success;
-	@Getter @Setter private String provider;
-	@Getter @Setter private NotificationChannel channel;
-	@Getter @Setter private String message;
-	@Getter @Setter private ErrorTypes errorType;
-	@Getter @Setter private String errorMessage;
+	private boolean success;
+	private String provider;
+	private NotificationChannel channel;
+	private String message;
+	private ErrorTypes errorType;
+	private String errorMessage;
 
 	public static NotificationResult success(String provider, NotificationChannel channel, String message) {
 		NotificationResult result = new NotificationResult();

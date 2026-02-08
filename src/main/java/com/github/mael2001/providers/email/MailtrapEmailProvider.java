@@ -2,7 +2,6 @@ package com.github.mael2001.providers.email;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -23,10 +22,12 @@ import io.mailtrap.model.request.emails.Address;
 import io.mailtrap.model.request.emails.MailtrapMail;
 import io.mailtrap.model.response.emails.SendResponse;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@NoArgsConstructor
 public class MailtrapEmailProvider implements EmailProvider {
 
 	@Getter
@@ -97,20 +98,6 @@ public class MailtrapEmailProvider implements EmailProvider {
 			}
 		}
 		return finalResult;
-	}
-
-	@Override
-	public NotificationResult sendAsync(EmailNotification request) {
-		// Implement retry logic for async sending
-		log.info("Triggering {}, with {} provider", this.getProviderType().toString(), this.getName());
-
-		CompletableFuture<NotificationResult> future = CompletableFuture.supplyAsync(() -> {
-			return this.send(request);
-		}).exceptionally(ex -> {
-			log.error("Failed to send email async via {}: {}", this.getName(), ex.getMessage());
-			return NotificationResult.failure(this.getName(), ErrorTypes.UNKNOWN, ex.getMessage(), channel());
-		});
-		return future.join();
 	}
 
 	// This method is used to send the email without retry logic, it is called by

@@ -9,23 +9,14 @@ import com.github.mael2001.config.RetryConfig;
 import com.github.mael2001.domain.NotificationEvent;
 import com.github.mael2001.publisher.NotificationPublisher;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 public class FakeEventPublisher implements NotificationPublisher {
-    @Getter final List<NotificationEvent> events = new ArrayList<>();
-
-	@Getter
-	@Setter
+    final List<NotificationEvent> events = new ArrayList<>();
 	private GlobalConfig globalConfig;
-	@Getter
-	@Setter
 	private RetryConfig retryConfig;
-    @Getter
-    @Setter
     private ProviderConfig providerConfig;
-	@Getter
-	@Setter
 	private String name;
 
     @Override

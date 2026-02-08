@@ -38,7 +38,8 @@ public class SMSProviderTest {
         SMSNotification sms = new SMSNotification(
                 "Test Message",
                 "1234564",
-                "in-memory-sms");
+                "in-memory-sms",
+                false);
 
         NotificationResult result = provider.send(sms);
 
@@ -60,7 +61,7 @@ public class SMSProviderTest {
         SMSNotification sms = new SMSNotification(
                 "Test Message",
                 "1234564",
-                "in-memory-sms");
+                "in-memory-sms", false);
         assertDoesNotThrow(() -> provider.send(sms));
     }
 

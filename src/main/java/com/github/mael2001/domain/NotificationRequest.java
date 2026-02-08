@@ -10,6 +10,8 @@ public interface NotificationRequest {
 
     String getProviderName();
 
+    boolean isAsync();
+
     default String correlationId() {
         //Generate a radnom UUID or return null if not needed
         return java.util.UUID.randomUUID().toString();

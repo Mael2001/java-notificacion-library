@@ -19,25 +19,27 @@ import com.github.mael2001.models.FakePushProvider;
 
 public class PushProviderTest {
 
-    //Default configs to avoid boilerplate in tests
-	private static final RetryConfig DEFAULT_RETRY_CONFIG = new RetryConfig();
-	private static final GlobalConfig DEFAULT_GLOBAL_CONFIG = new GlobalConfig();
-    // These configs are needed to build the client, but their values don't matter for these tests since we use fakes
-	private static final OneSignalConf DEFAULT_PUSH_CONFIG = new OneSignalConf("api.onesignal.com", "api-key", "app-id", true);
+    // Default configs to avoid boilerplate in tests
+    private static final RetryConfig DEFAULT_RETRY_CONFIG = new RetryConfig();
+    private static final GlobalConfig DEFAULT_GLOBAL_CONFIG = new GlobalConfig();
+    // These configs are needed to build the client, but their values don't matter
+    // for these tests since we use fakes
+    private static final OneSignalConf DEFAULT_PUSH_CONFIG = new OneSignalConf("api.onesignal.com", "api-key", "app-id",
+            true);
 
     @Test
     void send_storesPush_andReturnsSuccessResult() {
         FakePushProvider provider = new FakePushProvider();
-		provider.setProviderConfig(DEFAULT_PUSH_CONFIG);
-		provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
-		provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
+        provider.setProviderConfig(DEFAULT_PUSH_CONFIG);
+        provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
+        provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
 
         PushNotification push = new PushNotification(
-			"Test Title",
-			"Test Message",
-			"1234564",
-            "fake"
-        );
+                "Test Title",
+                "Test Message",
+                "1234564",
+                "fake",
+                false);
 
         NotificationResult result = provider.send(push);
 
@@ -52,25 +54,25 @@ public class PushProviderTest {
     @Test
     void send_noThrowsValidationException_whenRequestInvalid() {
         FakePushProvider provider = new FakePushProvider();
-		provider.setProviderConfig(DEFAULT_PUSH_CONFIG);
-		provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
-		provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
+        provider.setProviderConfig(DEFAULT_PUSH_CONFIG);
+        provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
+        provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
 
         PushNotification push = new PushNotification(
-			"Test Title",
-			"Test Message",
-			"1234564",
-            "fake"
-        );
-        assertDoesNotThrow( () -> provider.send(push));
+                "Test Title",
+                "Test Message",
+                "1234564",
+                "fake",
+                false);
+        assertDoesNotThrow(() -> provider.send(push));
     }
 
     @Test
     void throwsValidationErrorWhenIncorrentSettingsSend() {
         FakePushProvider provider = new FakePushProvider();
-		provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
-		provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
+        provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
+        provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
 
-		assertThrows(ValidationException.class, () -> provider.setProviderConfig(new VonageConf()));
+        assertThrows(ValidationException.class, () -> provider.setProviderConfig(new VonageConf()));
     }
 }

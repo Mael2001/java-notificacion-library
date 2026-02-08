@@ -78,7 +78,7 @@ public class NotificationExamples {
 
 			String[] recipients = { "test@test.com" };
 
-			NotificationResult mailtrapRes = client.send(new EmailNotification(recipients, "Title", "Body", "Mailtrap"));
+			NotificationResult mailtrapRes = client.send(new EmailNotification(recipients, "Title", "Body", "Mailtrap", false));
 
 			log.info("result sucess:{}, channel:{}, errMsg:{}, errorType:{}, msg:{}, provider;{}", mailtrapRes.isSuccess(),
 					mailtrapRes.getChannel(), mailtrapRes.getErrorMessage(), mailtrapRes.getErrorType(), mailtrapRes.getMessage(), mailtrapRes.getProvider());
@@ -86,7 +86,7 @@ public class NotificationExamples {
 
 			log.info("Send Resend Email Notification");
 
-			NotificationResult resendRes = client.send(new EmailNotification(recipients, "Title", "Body", "Mailtrap"));
+			NotificationResult resendRes = client.send(new EmailNotification(recipients, "Title", "Body", "Mailtrap", false));
 
 			log.info("result sucess:{}, channel:{}, errMsg:{}, errorType:{}, msg:{}, provider;{}", resendRes.isSuccess(),
 					resendRes.getChannel(), resendRes.getErrorMessage(), resendRes.getErrorType(), resendRes.getMessage(), resendRes.getProvider());
@@ -95,7 +95,7 @@ public class NotificationExamples {
 			log.info("Send Onesignal Push Notification");
 
 
-			NotificationResult oneSignalRes = client.send(new PushNotification("test title", "test msg", "token", "Onesignal"));
+			NotificationResult oneSignalRes = client.send(new PushNotification("test title", "test msg", "token", "Onesignal", false));
 
 			log.info("result sucess:{}, channel:{}, errMsg:{}, errorType:{}, msg:{}, provider;{}", oneSignalRes.isSuccess(),
 					oneSignalRes.getChannel(), oneSignalRes.getErrorMessage(), oneSignalRes.getErrorType(), oneSignalRes.getMessage(), oneSignalRes.getProvider());
@@ -103,7 +103,7 @@ public class NotificationExamples {
 
 			log.info("Send Vonage SMS Notification");
 
-			NotificationResult vonageRes = client.send(new SMSNotification("Test Msg", "+455615245", "Vonage"));
+			NotificationResult vonageRes = client.send(new SMSNotification("Test Msg", "+455615245", "Vonage", false));
 
 			log.info("result sucess:{}, channel:{}, errMsg:{}, errorType:{}, msg:{}, provider;{}", vonageRes.isSuccess(),
 					vonageRes.getChannel(), vonageRes.getErrorMessage(), vonageRes.getErrorType(), vonageRes.getMessage(), vonageRes.getProvider());

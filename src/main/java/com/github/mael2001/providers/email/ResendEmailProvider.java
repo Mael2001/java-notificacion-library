@@ -1,6 +1,5 @@
 package com.github.mael2001.providers.email;
 
-import java.util.concurrent.CompletableFuture;
 import com.github.mael2001.channels.EmailNotification;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.ProviderConfig;
@@ -16,10 +15,12 @@ import com.resend.services.emails.model.CreateEmailOptions;
 import com.resend.services.emails.model.CreateEmailResponse;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@NoArgsConstructor
 public class ResendEmailProvider implements EmailProvider {
 
 	@Getter
@@ -78,20 +79,6 @@ public class ResendEmailProvider implements EmailProvider {
 			}
 		}
 		return finalResult;
-	}
-
-	@Override
-	public NotificationResult sendAsync(EmailNotification request) {
-		// Implement retry logic for async sending
-		log.info("Triggering {}, with {} provider", this.getProviderType().toString(), this.getName());
-
-		CompletableFuture<NotificationResult> future = CompletableFuture.supplyAsync(() -> {
-			return this.send(request);
-		}).exceptionally(ex -> {
-			log.error("Failed to send email async via {}: {}", this.getName(), ex.getMessage());
-			return NotificationResult.failure(this.getName(), ErrorTypes.UNKNOWN, ex.getMessage(), channel());
-		});
-		return future.join();
 	}
 
 	private CreateEmailResponse sendEmail(EmailNotification request) throws ResendException {

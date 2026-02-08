@@ -16,13 +16,18 @@ import com.github.mael2001.validation.PushNotificationValidator;
 import com.github.mael2001.validation.SMSNotificationValidator;
 import com.github.mael2001.validation.Validator;
 
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import java.security.ProviderException;
 import java.time.Instant;
 import java.util.Map;
 
+@Slf4j
+@AllArgsConstructor
 class DefaultNotificationClient implements NotificationClient {
 
-    private final Map<String,  Notifier<?>> providers;
+	private final Map<String, Notifier<?>> providers;
 	private final Map<NotificationChannel, String> defaults;
 	private final Map<String, NotificationPublisher> eventPublishers;
 
@@ -30,15 +35,6 @@ class DefaultNotificationClient implements NotificationClient {
 			EmailNotification.class, new EmailNotificationValidator(),
 			PushNotification.class, new PushNotificationValidator(),
 			SMSNotification.class, new SMSNotificationValidator());
-
-	DefaultNotificationClient(
-			Map<String,  Notifier<?>> providers,
-			Map<NotificationChannel, String> defaults,
-			Map<String, NotificationPublisher> eventPublishers) {
-		this.providers = providers;
-		this.defaults = defaults;
-		this.eventPublishers = eventPublishers;
-	}
 
 	@Override
 	public NotificationResult send(NotificationRequest request) {
@@ -88,21 +84,21 @@ class DefaultNotificationClient implements NotificationClient {
 			Notifier<NotificationRequest> typed = (Notifier<NotificationRequest>) notifier;
 
 			// Send the request and return the result
-			NotificationResult result = typed.send(request);
+			NotificationResult result = request.isAsync() ? typed.sendAsync(request) : typed.send(request);
 
 			// Check if event publisher is set, if yes publish the event
 			if (eventPublishers != null) {
-				//Itinerate over all event publishers and publish the event to each of them
+				// Itinerate over all event publishers and publish the event to each of them
 				for (NotificationPublisher eventPublisher : eventPublishers.values()) {
 					// Gemerate random id for the event
 					String eventId = java.util.UUID.randomUUID().toString();
 					// Create the event
 					NotificationEvent event = new NotificationEvent(
 							eventId,
-							result.getProvider(),
 							result.getChannel(),
-							Instant.now(),
-							result);
+							result.getProvider(),
+							result,
+							Instant.now());
 
 					// Publish the event
 					eventPublisher.publish(event);

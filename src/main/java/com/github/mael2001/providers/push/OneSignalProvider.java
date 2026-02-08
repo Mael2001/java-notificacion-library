@@ -1,7 +1,6 @@
 package com.github.mael2001.providers.push;
 
 import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 import com.github.mael2001.channels.PushNotification;
@@ -23,10 +22,12 @@ import com.onesignal.client.model.LanguageStringMap;
 import com.onesignal.client.model.Notification;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@NoArgsConstructor
 public class OneSignalProvider implements PushProvider {
 
 	@Getter
@@ -92,20 +93,6 @@ public class OneSignalProvider implements PushProvider {
 			}
 		}
 		return finalResult;
-	}
-
-	@Override
-	public NotificationResult sendAsync(PushNotification request) {
-		// Implement retry logic for async sending
-		log.info("Triggering {}, with {} provider", this.getProviderType().toString(), this.getName());
-
-		CompletableFuture<NotificationResult> future = CompletableFuture.supplyAsync(() -> {
-			return this.send(request);
-		}).exceptionally(ex -> {
-			log.error("Failed to send email async via {}: {}", this.getName(), ex.getMessage());
-			return NotificationResult.failure(this.getName(), ErrorTypes.UNKNOWN, ex.getMessage(), channel());
-		});
-		return future.join();
 	}
 
 	private CreateNotificationSuccessResponse sendPush(PushNotification request) throws ApiException{

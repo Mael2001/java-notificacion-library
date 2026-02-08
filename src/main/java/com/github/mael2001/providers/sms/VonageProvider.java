@@ -1,6 +1,5 @@
 package com.github.mael2001.providers.sms;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -19,10 +18,12 @@ import com.vonage.client.sms.SmsSubmissionResponse;
 import com.vonage.client.sms.messages.TextMessage;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@NoArgsConstructor
 public class VonageProvider implements SMSProvider {
 
 	@Getter
@@ -90,20 +91,6 @@ public class VonageProvider implements SMSProvider {
 			}
 		}
 		return finalResult;
-	}
-
-	@Override
-	public NotificationResult sendAsync(SMSNotification request) {
-		// Implement retry logic for async sending
-		log.info("Triggering {}, with {} provider", this.getProviderType().toString(), this.getName());
-
-		CompletableFuture<NotificationResult> future = CompletableFuture.supplyAsync(() -> {
-			return this.send(request);
-		}).exceptionally(ex -> {
-			log.error("Failed to send email async via {}: {}", this.getName(), ex.getMessage());
-			return NotificationResult.failure(this.getName(), ErrorTypes.UNKNOWN, ex.getMessage(), channel());
-		});
-		return future.join();
 	}
 
 	private SmsSubmissionResponse sendSMS(SMSNotification request) {

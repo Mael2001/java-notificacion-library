@@ -44,7 +44,8 @@ public class EmailProviderTest {
 			bcc,
 			"Test Subject",
 			"Test Body",
-			"in-memory-email"
+			"in-memory-email",
+			false
         );
 
         NotificationResult result = provider.send(email);
@@ -74,7 +75,8 @@ public class EmailProviderTest {
 			bcc,
 			"Test Subject",
 			"Test Body",
-			"in-memory-email"
+			"in-memory-email",
+			false
         );
 
         assertDoesNotThrow( () -> provider.send(email));

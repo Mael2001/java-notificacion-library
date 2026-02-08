@@ -67,7 +67,7 @@ public class NotificationClientBuilderTest {
 
         // Verify wiring indirectly by sending a request
         NotificationRequest req = new SMSNotification() {
-            @Override public NotificationChannel channel() { return NotificationChannel.SMS; }
+            @Override public NotificationChannel getChannel() { return NotificationChannel.SMS; }
         };
 
         NotificationResult res = client.send(req);

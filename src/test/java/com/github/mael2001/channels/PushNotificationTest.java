@@ -26,7 +26,7 @@ public class PushNotificationTest {
 	@Test
 	void channel_isPush() {
 		var n = new PushNotification();
-		assertEquals(NotificationChannel.PUSH, n.channel());
+		assertEquals(NotificationChannel.PUSH, n.getChannel());
 	}
 
 	@Test

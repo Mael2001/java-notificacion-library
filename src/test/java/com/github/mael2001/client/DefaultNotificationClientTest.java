@@ -10,9 +10,10 @@ import com.github.mael2001.channels.EmailNotification;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.RetryConfig;
 import com.github.mael2001.config.email.EmailConfig;
-import com.github.mael2001.config.push.PushConfig;
+import com.github.mael2001.config.email.MailtrapConf;
+import com.github.mael2001.config.push.OneSignalConf;
 import com.github.mael2001.config.rabbit.RabbitMQConfig;
-import com.github.mael2001.config.sms.SMSConfig;
+import com.github.mael2001.config.sms.VonageConf;
 import com.github.mael2001.domain.NotificationEvent;
 import com.github.mael2001.domain.NotificationRequest;
 import com.github.mael2001.domain.NotificationResult;
@@ -29,12 +30,9 @@ public class DefaultNotificationClientTest {
 	private static final GlobalConfig DEFAULT_GLOBAL_CONFIG = new GlobalConfig();
 
 	// These configs are needed to build the client, but their values don't matter for these tests since we use fakes
-	private static final EmailConfig DEFAULT_EMAIL_CONFIG = new EmailConfig("smtp.example.com", 587, "user", "pass",
-			true, true, "test@example.com", "fake-email-provider");
-	private static final SMSConfig DEFAULT_SMS_CONFIG = new SMSConfig("fake-api-key", "fake-api-url",
-			"fake-sms-provider");
-	private static final PushConfig DEFAULT_PUSH_CONFIG = new PushConfig("fake-api-key", "fake-api-url",
-			"fake-push-provider");
+	private static final EmailConfig DEFAULT_EMAIL_CONFIG = new MailtrapConf("test@test.com", "api-token", true, 123123);
+	private static final OneSignalConf DEFAULT_PUSH_CONFIG = new OneSignalConf("api.onesignal.com", "api-key", "app-id", true);
+	private static final VonageConf DEFAULT_SMS_CONFIG = new VonageConf("api.onesignal.com", "api-key","api-secret", "app-id", "brand-name");
 
 	// Publisher Config
 	private static final RabbitMQConfig DEFAULT_RABBIT_CONFIG = new RabbitMQConfig("fake-host", 5672, "fake-user",
@@ -66,7 +64,7 @@ public class DefaultNotificationClientTest {
 		// Act & Assert
 		class ValidatingRequest extends EmailNotification {
 			@Override
-			public NotificationChannel channel() {
+			public NotificationChannel getChannel() {
 				return NotificationChannel.EMAIL;
 			}
 		}
@@ -94,9 +92,9 @@ public class DefaultNotificationClientTest {
 				.defaultProvider(NotificationChannel.EMAIL, "fake-email-provider")
 				.build();
 
-		NotificationRequest req = new NotificationRequest() {
+		NotificationRequest req = new EmailNotification() {
 			@Override
-			public NotificationChannel channel() {
+			public NotificationChannel getChannel() {
 				return NotificationChannel.EMAIL;
 			}
 
@@ -124,7 +122,7 @@ public class DefaultNotificationClientTest {
 
 		NotificationRequest req = new EmailNotification() {
 			@Override
-			public NotificationChannel channel() {
+			public NotificationChannel getChannel() {
 				return NotificationChannel.EMAIL;
 			}
 
@@ -159,9 +157,9 @@ public class DefaultNotificationClientTest {
 				.defaultProvider(NotificationChannel.EMAIL, "fake-email-provider")
 				.build();
 
-		NotificationRequest req = new NotificationRequest() {
+		NotificationRequest req = new EmailNotification() {
 			@Override
-			public NotificationChannel channel() {
+			public NotificationChannel getChannel() {
 				return NotificationChannel.EMAIL;
 			}
 

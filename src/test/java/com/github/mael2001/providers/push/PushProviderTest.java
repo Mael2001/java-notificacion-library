@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import com.github.mael2001.channels.PushNotification;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.RetryConfig;
-import com.github.mael2001.config.push.PushConfig;
-import com.github.mael2001.config.sms.SMSConfig;
+import com.github.mael2001.config.push.OneSignalConf;
+import com.github.mael2001.config.sms.VonageConf;
 import com.github.mael2001.domain.NotificationResult;
 import com.github.mael2001.exceptions.ValidationException;
 import com.github.mael2001.models.FakePushProvider;
@@ -23,8 +23,7 @@ public class PushProviderTest {
 	private static final RetryConfig DEFAULT_RETRY_CONFIG = new RetryConfig();
 	private static final GlobalConfig DEFAULT_GLOBAL_CONFIG = new GlobalConfig();
     // These configs are needed to build the client, but their values don't matter for these tests since we use fakes
-	private static final PushConfig DEFAULT_PUSH_CONFIG = new PushConfig("fake-api-key", "fake-api-url",
-			"fake-push-provider");
+	private static final OneSignalConf DEFAULT_PUSH_CONFIG = new OneSignalConf("api.onesignal.com", "api-key", "app-id", true);
 
     @Test
     void send_storesPush_andReturnsSuccessResult() {
@@ -36,7 +35,8 @@ public class PushProviderTest {
         PushNotification push = new PushNotification(
 			"Test Title",
 			"Test Message",
-			"1234564"
+			"1234564",
+            "fake"
         );
 
         NotificationResult result = provider.send(push);
@@ -59,7 +59,8 @@ public class PushProviderTest {
         PushNotification push = new PushNotification(
 			"Test Title",
 			"Test Message",
-			"1234564"
+			"1234564",
+            "fake"
         );
         assertDoesNotThrow( () -> provider.send(push));
     }
@@ -70,6 +71,6 @@ public class PushProviderTest {
 		provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
 		provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
 
-		assertThrows(ValidationException.class, () -> provider.setProviderConfig(new SMSConfig()));
+		assertThrows(ValidationException.class, () -> provider.setProviderConfig(new VonageConf()));
     }
 }

@@ -1,5 +1,7 @@
 package com.github.mael2001.models;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.github.mael2001.client.RetryConfigAware;
 import com.github.mael2001.config.ProviderConfig;
 import com.github.mael2001.config.RetryConfig;
@@ -45,6 +47,10 @@ public class FakeRetryAwareNotifier implements Notifier<NotificationRequest>, Re
     public void setRetryConfig(RetryConfig config) {
         this.retryConfig = config;
         this.received = config;
+    }
+    @Override
+    public NotificationResult sendAsync(NotificationRequest request) {
+		return CompletableFuture.supplyAsync(() -> send(request)).join();
     }
 
 

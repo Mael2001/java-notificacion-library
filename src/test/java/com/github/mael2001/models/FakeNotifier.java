@@ -1,5 +1,7 @@
 package com.github.mael2001.models;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.ProviderConfig;
 import com.github.mael2001.config.RetryConfig;
@@ -48,5 +50,10 @@ public class FakeNotifier implements Notifier<NotificationRequest> {
     @Override
     public String getProviderType() {
         return channel.name();
+    }
+
+    @Override
+    public NotificationResult sendAsync(NotificationRequest request) {
+		return CompletableFuture.supplyAsync(() -> send(request)).join();
     }
 }

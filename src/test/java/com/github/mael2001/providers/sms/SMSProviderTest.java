@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import com.github.mael2001.channels.SMSNotification;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.RetryConfig;
-import com.github.mael2001.config.email.EmailConfig;
-import com.github.mael2001.config.sms.SMSConfig;
+import com.github.mael2001.config.email.MailtrapConf;
+import com.github.mael2001.config.sms.VonageConf;
 import com.github.mael2001.domain.NotificationResult;
 import com.github.mael2001.exceptions.ValidationException;
 import com.github.mael2001.models.FakeSMSProvider;
@@ -25,8 +25,8 @@ public class SMSProviderTest {
 
     // These configs are needed to build the client, but their values don't matter
     // for these tests since we use fakes
-    private static final SMSConfig DEFAULT_SMS_CONFIG = new SMSConfig("fake-api-key", "fake-api-url",
-            "fake-sms-provider");
+    private static final VonageConf DEFAULT_SMS_CONFIG = new VonageConf("api.onesignal.com", "api-key", "api-secret",
+            "app-id", "brand-name");
 
     @Test
     void send_storesSMS_andReturnsSuccessResult() {
@@ -37,7 +37,8 @@ public class SMSProviderTest {
 
         SMSNotification sms = new SMSNotification(
                 "Test Message",
-                "1234564");
+                "1234564",
+                "in-memory-sms");
 
         NotificationResult result = provider.send(sms);
 
@@ -58,7 +59,8 @@ public class SMSProviderTest {
 
         SMSNotification sms = new SMSNotification(
                 "Test Message",
-                "1234564");
+                "1234564",
+                "in-memory-sms");
         assertDoesNotThrow(() -> provider.send(sms));
     }
 
@@ -68,6 +70,6 @@ public class SMSProviderTest {
         provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
         provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
 
-        assertThrows(ValidationException.class, () -> provider.setProviderConfig(new EmailConfig()));
+        assertThrows(ValidationException.class, () -> provider.setProviderConfig(new MailtrapConf()));
     }
 }

@@ -16,8 +16,7 @@ import com.github.mael2001.publisher.NotificationPublisher;
 
 public class NotificationClientBuilder {
 
-    private final Map<NotificationChannel, Map<String, Notifier<?>>> providers = new EnumMap<>(
-            NotificationChannel.class);
+    private final Map<String,  Notifier<?>> providers = new HashMap<>();
     private final Map<String, NotificationPublisher> eventPublishers = new HashMap<>();
     private final Map<NotificationChannel, String> defaults = new EnumMap<>(NotificationChannel.class);
 
@@ -51,9 +50,7 @@ public class NotificationClientBuilder {
             String name,
             Notifier<?> notifier) {
         notifier.setName(name);
-        providers
-                .computeIfAbsent(channel, c -> new java.util.HashMap<>())
-                .put(name, notifier);
+        providers.putIfAbsent(name, notifier);
         return this;
     }
 
@@ -77,7 +74,7 @@ public class NotificationClientBuilder {
         }
 
         // inject global && ret config into providers that support it
-        for (Notifier<?> notifier : providers.values().stream().flatMap(m -> m.values().stream()).toList()) {
+        for (Notifier<?> notifier : providers.values()) {
             if (notifier instanceof GlobalConfigAware aware) {
                 aware.setGlobalConfig(globalConfig);
             }

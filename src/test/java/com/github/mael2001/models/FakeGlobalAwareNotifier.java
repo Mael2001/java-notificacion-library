@@ -1,5 +1,7 @@
 package com.github.mael2001.models;
 
+import java.util.concurrent.CompletableFuture;
+
 import com.github.mael2001.client.GlobalConfigAware;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.ProviderConfig;
@@ -53,5 +55,10 @@ public class FakeGlobalAwareNotifier implements Notifier<NotificationRequest>, G
     @Override
     public String getProviderType() {
         return "FakeProviderType";
+    }
+
+    @Override
+    public NotificationResult sendAsync(NotificationRequest request) {
+		return CompletableFuture.supplyAsync(() -> send(request)).join();
     }
 }

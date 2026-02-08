@@ -6,7 +6,9 @@ import com.github.mael2001.dto.NotificationChannel;
 
 public interface NotificationRequest {
 
-    NotificationChannel channel();
+    NotificationChannel getChannel();
+
+    String getProviderName();
 
     default String correlationId() {
         //Generate a radnom UUID or return null if not needed

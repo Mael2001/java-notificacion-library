@@ -2,6 +2,7 @@ package com.github.mael2001.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.github.mael2001.channels.EmailNotification;
 import com.github.mael2001.config.GlobalConfig;
@@ -67,6 +68,11 @@ public class FakeEmailProvider implements EmailProvider {
 		} else {
 			throw new ValidationException("Invalid provider config type for MailtrapEmailProvider");
 		}
+	}
+
+	@Override
+	public NotificationResult sendAsync(EmailNotification request) {
+		return CompletableFuture.supplyAsync(() -> send(request)).join();
 	}
 
 

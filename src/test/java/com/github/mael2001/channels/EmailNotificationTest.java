@@ -26,7 +26,7 @@ public class EmailNotificationTest {
 	@Test
 	void channel_isEmail() {
 		var n = new EmailNotification();
-		assertEquals(NotificationChannel.EMAIL, n.channel());
+		assertEquals(NotificationChannel.EMAIL, n.getChannel());
 	}
 
 	@Test
@@ -44,8 +44,11 @@ public class EmailNotificationTest {
 	@Test
 	void validate_throws_whenSubjectBlank() {
 		var n = new EmailNotification();
+
+		String[] recipients = {"test@test.com"};
+
 		n.setBody("TEST");
-		n.setRecipient("test@test.com");
+		n.setRecipients(recipients);
 		// Validate request based on its type
 		Validator<NotificationRequest> validator = (Validator<NotificationRequest>) validators
 				.get(n.getClass());
@@ -56,8 +59,11 @@ public class EmailNotificationTest {
 	@Test
 	void validate_throws_whenBodyBlank() {
 		var n = new EmailNotification();
+
+		String[] recipients = {"test@test.com"};
+
 		n.setSubject("Test");
-		n.setRecipient("test@test.com");
+		n.setRecipients(recipients);
 
 		// Validate request based on its type
 		Validator<NotificationRequest> validator = (Validator<NotificationRequest>) validators
@@ -69,9 +75,12 @@ public class EmailNotificationTest {
 	@Test
 	void validate_ok_whenValid() {
 		var n = new EmailNotification();
+
+		String[] recipients = {"test@test.com"};
+
 		n.setSubject("Test");
-		n.setRecipient("test@test.com");
 		n.setBody("TEST");
+		n.setRecipients(recipients);
 		// Validate request based on its type
 		Validator<NotificationRequest> validator = (Validator<NotificationRequest>) validators
 				.get(n.getClass());

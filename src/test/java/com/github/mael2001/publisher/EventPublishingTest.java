@@ -6,10 +6,10 @@ import com.github.mael2001.client.NotificationClient;
 import com.github.mael2001.client.NotificationClientBuilder;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.RetryConfig;
-import com.github.mael2001.config.email.EmailConfig;
-import com.github.mael2001.config.push.PushConfig;
+import com.github.mael2001.config.email.MailtrapConf;
+import com.github.mael2001.config.push.OneSignalConf;
 import com.github.mael2001.config.rabbit.RabbitMQConfig;
-import com.github.mael2001.config.sms.SMSConfig;
+import com.github.mael2001.config.sms.VonageConf;
 import com.github.mael2001.domain.NotificationEvent;
 import com.github.mael2001.domain.NotificationRequest;
 import com.github.mael2001.domain.NotificationResult;
@@ -25,15 +25,10 @@ class EventPublishingTest {
 	private static final GlobalConfig DEFAULT_GLOBAL_CONFIG = new GlobalConfig();
 	private static final RetryConfig DEFAULT_RETRY_CONFIG = new RetryConfig();
 
-	// These configs are needed to build the client, but their values don't matter
-	// for these tests since we use fakes
-	private static final EmailConfig DEFAULT_EMAIL_CONFIG = new EmailConfig("smtp.example.com", 587, "user", "pass",
-			true, true, "test@example.com", "fake-email-provider");
-	private static final SMSConfig DEFAULT_SMS_CONFIG = new SMSConfig("fake-api-key", "fake-api-url",
-			"fake-sms-provider");
-	private static final PushConfig DEFAULT_PUSH_CONFIG = new PushConfig("fake-api-key", "fake-api-url",
-			"fake-push-provider");
-
+	// These configs are needed to build the client, but their values don't matter for these tests since we use fakes
+	private static final MailtrapConf DEFAULT_EMAIL_CONFIG = new MailtrapConf("test@test.com", "api-token", true, 123123);
+	private static final OneSignalConf DEFAULT_PUSH_CONFIG = new OneSignalConf("api.onesignal.com", "api-key", "app-id", true);
+	private static final VonageConf DEFAULT_SMS_CONFIG = new VonageConf("api.onesignal.com", "api-key","api-secret", "app-id", "brand-name");
 	// Publisher Config
 	private static final RabbitMQConfig DEFAULT_RABBIT_CONFIG = new RabbitMQConfig("fake-host", 5672, "fake-user",
 			"fake-pass", "fake-virtual-host", "fake-exchange", "fake-routing-key", false, true, "fake-publisher");
@@ -61,13 +56,18 @@ class EventPublishingTest {
 
 		NotificationRequest req = new NotificationRequest() {
 			@Override
-			public NotificationChannel channel() {
+			public NotificationChannel getChannel() {
 				return NotificationChannel.EMAIL;
 			}
 
 			@Override
 			public String correlationId() {
 				return "corr-99";
+			}
+
+			@Override
+			public String getProviderName() {
+				return "fake";
 			}
 
 		};
@@ -121,13 +121,18 @@ class EventPublishingTest {
 
 		NotificationRequest req = new NotificationRequest() {
 			@Override
-			public NotificationChannel channel() {
+			public NotificationChannel getChannel() {
 				return NotificationChannel.EMAIL;
 			}
 
 			@Override
 			public String correlationId() {
 				return "corr-1";
+			}
+
+			@Override
+			public String getProviderName() {
+				return "fake";
 			}
 
 		};

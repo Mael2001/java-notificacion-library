@@ -26,7 +26,7 @@ public class SMSNotificationTest {
     @Test
     void channel_isSms() {
         var n = new SMSNotification();
-        assertEquals(NotificationChannel.SMS, n.channel());
+        assertEquals(NotificationChannel.SMS, n.getChannel());
     }
 
     @Test

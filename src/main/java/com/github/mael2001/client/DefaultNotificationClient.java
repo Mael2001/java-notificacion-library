@@ -22,7 +22,7 @@ import java.util.Map;
 
 class DefaultNotificationClient implements NotificationClient {
 
-	private final Map<NotificationChannel, Map<String, Notifier<?>>> providers;
+    private final Map<String,  Notifier<?>> providers;
 	private final Map<NotificationChannel, String> defaults;
 	private final Map<String, NotificationPublisher> eventPublishers;
 
@@ -32,7 +32,7 @@ class DefaultNotificationClient implements NotificationClient {
 			SMSNotification.class, new SMSNotificationValidator());
 
 	DefaultNotificationClient(
-			Map<NotificationChannel, Map<String, Notifier<?>>> providers,
+			Map<String,  Notifier<?>> providers,
 			Map<NotificationChannel, String> defaults,
 			Map<String, NotificationPublisher> eventPublishers) {
 		this.providers = providers;
@@ -58,20 +58,25 @@ class DefaultNotificationClient implements NotificationClient {
 			}
 
 			// Get the channel of the request
-			NotificationChannel channel = request.channel();
+			NotificationChannel channel = request.getChannel();
+
+			// Get the provider of the request
+			String provider = request.getProviderName();
 
 			// Get the default provider for the channel
-			String defaultProvider = defaults.get(channel);
-
-			// Check if default provider is set
-			if (defaultProvider == null || defaultProvider.isBlank()) {
-				throw new ValidationException("No default provider configured for channel: " + channel);
-			}
+			String defaultProviderName = defaults.get(channel);
 
 			// Get the notifier for the channel and provider
+			Notifier<?> defaultProvider = providers
+					.get(defaultProviderName);
+
+			// Check if default provider is set
+			if (defaultProvider == null) {
+				throw new ValidationException("No default provider configured for channel: " + channel);
+			}
+			// Get the notifier for the channel and provider
 			Notifier<?> notifier = providers
-					.getOrDefault(channel, Map.of())
-					.get(defaultProvider);
+					.getOrDefault(provider, defaultProvider);
 
 			// Check if notifier is found
 			if (notifier == null) {

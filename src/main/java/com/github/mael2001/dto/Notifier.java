@@ -9,5 +9,7 @@ public interface Notifier<T extends NotificationRequest> extends Service {
 
     NotificationResult send(T request);
 
+    NotificationResult sendAsync(T request);
+
 	String getProviderType();
 }

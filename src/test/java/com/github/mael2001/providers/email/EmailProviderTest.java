@@ -12,7 +12,8 @@ import com.github.mael2001.channels.EmailNotification;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.RetryConfig;
 import com.github.mael2001.config.email.EmailConfig;
-import com.github.mael2001.config.push.PushConfig;
+import com.github.mael2001.config.email.MailtrapConf;
+import com.github.mael2001.config.push.OneSignalConf;
 import com.github.mael2001.domain.NotificationResult;
 import com.github.mael2001.exceptions.ValidationException;
 import com.github.mael2001.models.FakeEmailProvider;
@@ -24,8 +25,7 @@ public class EmailProviderTest {
 	private static final GlobalConfig DEFAULT_GLOBAL_CONFIG = new GlobalConfig();
 
 	// These configs are needed to build the client, but their values don't matter for these tests since we use fakes
-	private static final EmailConfig DEFAULT_EMAIL_CONFIG = new EmailConfig("smtp.example.com", 587, "user", "pass",
-			true, true, "test@example.com", "fake-email-provider");
+	private static final EmailConfig DEFAULT_EMAIL_CONFIG = new MailtrapConf("test@test.com", "api-token", true, 123123);
 
     @Test
     void send_storesEmail_andReturnsSuccessResult() {
@@ -34,10 +34,17 @@ public class EmailProviderTest {
 		provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
 		provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
 
+		String[] recipients = {"test@test.com"};
+		String[] cc = {"cc@test.com"};
+		String[] bcc = {"bcc@test.com"};
+
         EmailNotification email = new EmailNotification(
-			"test@example.com",
+			recipients,
+			cc,
+			bcc,
 			"Test Subject",
-			"Test Body"
+			"Test Body",
+			"in-memory-email"
         );
 
         NotificationResult result = provider.send(email);
@@ -57,11 +64,19 @@ public class EmailProviderTest {
 		provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
 		provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
 
+		String[] recipients = {"test@test.com"};
+		String[] cc = {"cc@test.com"};
+		String[] bcc = {"bcc@test.com"};
+
         EmailNotification email = new EmailNotification(
-			"test.com",
+			recipients,
+			cc,
+			bcc,
 			"Test Subject",
-			"Test Body"
+			"Test Body",
+			"in-memory-email"
         );
+
         assertDoesNotThrow( () -> provider.send(email));
     }
 
@@ -71,6 +86,6 @@ public class EmailProviderTest {
 		provider.setGlobalConfig(DEFAULT_GLOBAL_CONFIG);
 		provider.setRetryConfig(DEFAULT_RETRY_CONFIG);
 
-		assertThrows(ValidationException.class, () -> provider.setProviderConfig(new PushConfig()));
+		assertThrows(ValidationException.class, () -> provider.setProviderConfig(new OneSignalConf()));
     }
 }

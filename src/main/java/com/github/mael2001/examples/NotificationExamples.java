@@ -1,9 +1,9 @@
 package com.github.mael2001.examples;
 
+import com.github.mael2001.api.*;
 import com.github.mael2001.channels.EmailNotification;
 import com.github.mael2001.channels.PushNotification;
 import com.github.mael2001.channels.SMSNotification;
-import com.github.mael2001.client.*;
 import com.github.mael2001.config.*;
 import com.github.mael2001.dto.*;
 import com.github.mael2001.config.email.MailtrapConf;

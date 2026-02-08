@@ -1,5 +1,6 @@
-package com.github.mael2001.client;
+package com.github.mael2001.impl;
 
+import com.github.mael2001.api.NotificationClient;
 import com.github.mael2001.channels.EmailNotification;
 import com.github.mael2001.channels.PushNotification;
 import com.github.mael2001.channels.SMSNotification;
@@ -8,9 +9,9 @@ import com.github.mael2001.domain.NotificationRequest;
 import com.github.mael2001.domain.NotificationResult;
 import com.github.mael2001.dto.ErrorTypes;
 import com.github.mael2001.dto.NotificationChannel;
-import com.github.mael2001.dto.Notifier;
 import com.github.mael2001.exceptions.ValidationException;
 import com.github.mael2001.publisher.NotificationPublisher;
+import com.github.mael2001.spi.Notifier;
 import com.github.mael2001.validation.EmailNotificationValidator;
 import com.github.mael2001.validation.PushNotificationValidator;
 import com.github.mael2001.validation.SMSNotificationValidator;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 @Slf4j
 @AllArgsConstructor
-class DefaultNotificationClient implements NotificationClient {
+public class DefaultNotificationClient implements NotificationClient {
 
 	private final Map<String, Notifier<?>> providers;
 	private final Map<NotificationChannel, String> defaults;

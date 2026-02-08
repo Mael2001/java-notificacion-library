@@ -1,4 +1,4 @@
-package com.github.mael2001.validation.Validators;
+package com.github.mael2001.validation.validators;
 
 import com.github.mael2001.validation.ValidationResult;
 

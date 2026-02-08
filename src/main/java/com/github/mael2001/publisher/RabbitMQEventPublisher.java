@@ -9,6 +9,8 @@ import com.github.mael2001.config.ProviderConfig;
 import com.github.mael2001.config.RetryConfig;
 import com.github.mael2001.config.rabbit.RabbitMQConfig;
 import com.github.mael2001.domain.NotificationEvent;
+import com.github.mael2001.exceptions.RabbitException;
+import com.github.mael2001.exceptions.ValidationException;
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
@@ -42,7 +44,7 @@ public class RabbitMQEventPublisher implements NotificationPublisher {
         if (config instanceof RabbitMQConfig rabbitMQConfig && config.getProviderName().equals(this.getName())) {
             this.providerConfig = rabbitMQConfig;
         } else {
-            throw new IllegalArgumentException("Invalid provider config type for RabbitMQEventPublisher");
+            throw new ValidationException("Invalid provider config type for RabbitMQEventPublisher");
         }
     }
 
@@ -50,11 +52,13 @@ public class RabbitMQEventPublisher implements NotificationPublisher {
     public void close() {
         try {
             channel.close();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            throw new RabbitException(e);
         }
         try {
             connection.close();
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            throw new RabbitException(e);
         }
     }
 
@@ -103,6 +107,7 @@ public class RabbitMQEventPublisher implements NotificationPublisher {
 
         } catch (Exception e) {
             log.error("Error triggered when trying to publish event: {}", e.getMessage());
+            throw new RabbitException(e);
         }
     }
 

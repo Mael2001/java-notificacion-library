@@ -2,8 +2,8 @@ package com.github.mael2001.publisher;
 
 import org.junit.jupiter.api.Test;
 
-import com.github.mael2001.client.NotificationClient;
-import com.github.mael2001.client.NotificationClientBuilder;
+import com.github.mael2001.api.NotificationClient;
+import com.github.mael2001.api.NotificationClientBuilder;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.RetryConfig;
 import com.github.mael2001.config.email.MailtrapConf;

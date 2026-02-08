@@ -1,4 +1,4 @@
-package com.github.mael2001.client;
+package com.github.mael2001.api;
 
 import com.github.mael2001.domain.NotificationRequest;
 import com.github.mael2001.domain.NotificationResult;

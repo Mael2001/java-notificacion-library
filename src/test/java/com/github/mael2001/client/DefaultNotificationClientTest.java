@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.github.mael2001.api.NotificationClient;
+import com.github.mael2001.api.NotificationClientBuilder;
 import com.github.mael2001.channels.EmailNotification;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.RetryConfig;

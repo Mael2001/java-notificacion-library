@@ -2,13 +2,13 @@ package com.github.mael2001.models;
 
 import java.util.concurrent.CompletableFuture;
 
-import com.github.mael2001.client.RetryConfigAware;
 import com.github.mael2001.config.ProviderConfig;
 import com.github.mael2001.config.RetryConfig;
 import com.github.mael2001.domain.NotificationRequest;
 import com.github.mael2001.domain.NotificationResult;
 import com.github.mael2001.dto.NotificationChannel;
-import com.github.mael2001.dto.Notifier;
+import com.github.mael2001.spi.Notifier;
+import com.github.mael2001.spi.RetryConfigAware;
 
 import lombok.Getter;
 import lombok.Setter;

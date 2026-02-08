@@ -7,6 +7,7 @@ import com.github.mael2001.config.ProviderConfig;
 import com.github.mael2001.config.RetryConfig;
 import com.github.mael2001.domain.*;
 import com.github.mael2001.dto.*;
+import com.github.mael2001.spi.Notifier;
 
 import lombok.Getter;
 import lombok.Setter;

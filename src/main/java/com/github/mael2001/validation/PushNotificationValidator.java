@@ -2,7 +2,7 @@ package com.github.mael2001.validation;
 
 import com.github.mael2001.channels.PushNotification;
 import com.github.mael2001.exceptions.ValidationException;
-import com.github.mael2001.validation.Validators.CommonValidator;
+import com.github.mael2001.validation.validators.CommonValidator;
 
 public class PushNotificationValidator implements Validator<PushNotification> {
 

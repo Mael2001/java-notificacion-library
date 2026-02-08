@@ -1,4 +1,4 @@
-package com.github.mael2001.client;
+package com.github.mael2001.api;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -10,9 +10,13 @@ import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.ProviderConfig;
 import com.github.mael2001.config.RetryConfig;
 import com.github.mael2001.dto.NotificationChannel;
-import com.github.mael2001.dto.Notifier;
 import com.github.mael2001.exceptions.ConfigException;
+import com.github.mael2001.impl.DefaultNotificationClient;
 import com.github.mael2001.publisher.NotificationPublisher;
+import com.github.mael2001.spi.GlobalConfigAware;
+import com.github.mael2001.spi.Notifier;
+import com.github.mael2001.spi.ProviderConfigAware;
+import com.github.mael2001.spi.RetryConfigAware;
 
 public class NotificationClientBuilder {
 

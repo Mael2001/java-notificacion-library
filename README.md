@@ -48,6 +48,42 @@ client.send(new EmailNotification(...));
 
 ## Configuration
 
+All configuration is injected, never read from environment variables inside the library.
+
+#### Core
+- **GlobalConfig** – timeouts, retry policy, executor, clock
+- **RetryConfig** – retry metadata (no logic)
+- **ProviderConfig** – marker for provider configs
+
+#### Channel Configs
+- Email: `EmailConfig`, `MailtrapConf`, `ResendConf`
+- SMS: `SMSConfig`, `VonageConf`
+- Push: `PushConfig`, `OneSignalConf`
+- RabbitMQ: `RabbitMQConfig`
+
+---
+
+### 5️⃣ Providers (`providers`)
+Actual execution logic (sending notifications).
+
+#### Email
+- `EmailProvider`
+- `MailtrapEmailProvider`
+- `ResendEmailProvider`
+
+#### SMS
+- `SMSProvider`
+- `VonageProvider`
+
+#### Push
+- `PushProvider`
+- `OneSignalProvider`
+
+Providers:
+- Implement `Notifier<T>`
+- Use injected configs
+- Return `NotificationResult`
+
 In order to use each provider you need to instance a Config class from each of the config folder channels for example:
 
 Provider config interfaces and examples:
@@ -83,45 +119,81 @@ NotificationClient client = NotificationClientBuilder.create()
 After this you will be able to use the providers
 
 
-## API Reference
+## API Reference (🔑 Key Classes)
 
-Key classes:
-- com.github.mael2001.client.NotificationClientBuilder — builds NotificationClient instances.
-- com.github.mael2001.client.NotificationClient — client interface for sending notifications.
-- com.github.mael2001.client.DefaultNotificationClient — default client implementation.
-- com.github.mael2001.examples.NotificationExamples — usage examples.
+### API
+- **NotificationClient** – Public entry point to send notifications.
+- **NotificationClientBuilder** – Builder used to register providers, configure defaults, inject configs, and create the client.
 
-- com.github.mael2001.domain.NotificationRequest — base for notification requests.
-- com.github.mael2001.domain.NotificationEvent — event published after send attempts.
-- com.github.mael2001.domain.NotificationResult — result object returned by sends.
+---
 
-- com.github.mael2001.dto.NotificationChannel — enum of channels (EMAIL, SMS, PUSH).
-- com.github.mael2001.dto.ErrorTypes — error type definitions.
+### Domain
+- **NotificationRequest** – Base abstraction for all notification requests.
+- **NotificationResult** – Standardized result of a notification send attempt.
+- **NotificationEvent** – Domain event emitted after sending a notification.
 
-- com.github.mael2001.channels.EmailNotification — base class for email requests (and other channel bases).
+---
 
-- com.github.mael2001.notifiers.* — provider interfaces and implementations.
-  - com.github.mael2001.providers.push.OneSignalProvider — OneSignal push provider.
-  - com.github.mael2001.providers.sms.VonageProvider — Vonage SMS provider.
-  - (email providers such as Mailtrap provider)
+### Channels
+- **EmailNotification** – Email notification request.
+- **SMSNotification** – SMS notification request.
+- **PushNotification** – Push notification request.
 
-- com.github.mael2001.publisher.NotificationPublisher — event publisher interface.
-- com.github.mael2001.publisher.RabbitMQEventPublisher — RabbitMQ publisher implementation.
+---
 
-- com.github.mael2001.config.GlobalConfig — global client configuration.
-- com.github.mael2001.config.RetryConfig — retry behavior configuration.
-- com.github.mael2001.config.ProviderConfig — provider config base and subpackages:
-  - com.github.mael2001.config.email.MailtrapConf
-  - com.github.mael2001.config.push.OneSignalConf
-  - com.github.mael2001.config.sms.VonageConf
-  - com.github.mael2001.config.rabbit.RabbitMQConfig
+### Configuration
+- **GlobalConfig** – Cross-cutting configuration (timeouts, retry, executor, clock).
+- **RetryConfig** – Retry metadata.
+- **EmailConfig** – Email channel configuration.
+- **SMSConfig** – SMS channel configuration.
+- **PushConfig** – Push channel configuration.
+- **RabbitMQConfig** – RabbitMQ publisher configuration.
 
-- com.github.mael2001.exceptions.ConfigException — configuration errors.
+---
 
-- test helpers:
-  - com.github.mael2001.models.FakeNotifier
-  - com.github.mael2001.models.FakeEventPublisher
+### Client Implementation
+- **DefaultNotificationClient** – Core orchestrator that validates requests, resolves providers, delegates sending, and publishes events.
 
+---
+
+### Providers
+- **EmailProvider** – Email channel provider interface.
+- **MailtrapEmailProvider** – Email provider implementation.
+- **ResendEmailProvider** – Email provider implementation.
+- **SMSProvider** – SMS channel provider interface.
+- **VonageProvider** – SMS provider implementation.
+- **PushProvider** – Push channel provider interface.
+- **OneSignalProvider** – Push provider implementation.
+
+---
+
+### Event Publishing
+- **NotificationPublisher** – Abstraction for publishing notification events.
+- **RabbitMQEventPublisher** – RabbitMQ-based event publisher.
+
+---
+
+### SPI / Extension Points
+- **Notifier<T>** – Core provider execution contract.
+- **GlobalConfigAware** – Opt-in interface for receiving global configuration.
+- **RetryConfigAware** – Opt-in retry configuration interface.
+- **ProviderConfigAware** – Opt-in provider configuration interface.
+
+---
+
+### Validation
+- **Validator<T>** – Generic validation contract.
+- **EmailNotificationValidator** – Email request validation.
+- **SMSNotificationValidator** – SMS request validation.
+- **PushNotificationValidator** – Push request validation.
+
+---
+
+### Exceptions
+- **ValidationException** – Invalid request data.
+- **ConfigException** – Configuration errors.
+- **ProviderException** – Provider execution failures.
+- **RabbitException** – RabbitMQ publishing errors.
 
 ## Supported providers (included)
 

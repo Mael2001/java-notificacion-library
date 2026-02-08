@@ -1,4 +1,3 @@
-// ...existing code...
 # Java Notification Library
 
 Lightweight library to send notifications (Email, SMS, Push) and publish events.

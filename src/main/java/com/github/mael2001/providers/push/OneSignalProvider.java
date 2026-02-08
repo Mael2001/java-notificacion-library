@@ -1,13 +1,13 @@
-package com.github.mael2001.providers.email;
+package com.github.mael2001.providers.push;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import com.github.mael2001.channels.EmailNotification;
+import com.github.mael2001.channels.PushNotification;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.ProviderConfig;
 import com.github.mael2001.config.RetryConfig;
-import com.github.mael2001.config.email.EmailConfig;
+import com.github.mael2001.config.push.PushConfig;
 import com.github.mael2001.domain.NotificationResult;
 import com.github.mael2001.dto.ErrorTypes;
 import com.github.mael2001.dto.NotificationChannel;
@@ -18,7 +18,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MailtrapEmailProvider implements EmailProvider {
+public class OneSignalProvider implements PushProvider {
 
 	@Getter
 	@Setter
@@ -30,29 +30,29 @@ public class MailtrapEmailProvider implements EmailProvider {
 	@Setter
 	private String name;
 	@Getter
-	private EmailConfig providerConfig;
+	private PushConfig providerConfig;
 
 	@Override
 	public String getProviderType() {
-		return NotificationChannel.EMAIL.name();
+		return NotificationChannel.PUSH.name();
 	}
 
 	@Override
 	public NotificationChannel channel() {
-		return NotificationChannel.EMAIL;
+		return NotificationChannel.PUSH;
 	}
 
 	@Override
 	public void setProviderConfig(ProviderConfig config) {
-		if (config instanceof EmailConfig emailConfig && config.getProviderName().equals(this.getName())) {
-			this.providerConfig = emailConfig;
+		if (config instanceof PushConfig pushConfig && config.getProviderName().equals(this.getName())) {
+			this.providerConfig = pushConfig;
 		} else {
-			throw new ValidationException("Invalid provider config type for MailtrapEmailProvider");
+			throw new ValidationException("Invalid provider config type for OneSignalProvider");
 		}
 	}
 
 	@Override
-	public NotificationResult send(EmailNotification request) {
+	public NotificationResult send(PushNotification request) {
 		// Check if async is enabled in global config
 		if (globalConfig.isEnableAsync()) {
 			// Implement retry logic for async sending
@@ -83,21 +83,20 @@ public class MailtrapEmailProvider implements EmailProvider {
 			return finalResult;
 		}
 
-		log.info("Email sent successfully via {} to {}", this.getName(), request.getRecipient());
-		return NotificationResult.success(this.getName(), channel(), "Email sent successfully");
+		log.info("Push notification sent successfully via {} to {}", this.getName(), request.getRecipientDeviceToken());
+		return NotificationResult.success(this.getName(), channel(), "Push notification sent successfully");
 	}
 
-	private NotificationResult sendAsync(EmailNotification request) {
+	private NotificationResult sendAsync(PushNotification request) {
 		CompletableFuture<NotificationResult> future = CompletableFuture.supplyAsync(() -> {
 
-			log.info("Email sent successfully via {} to {}", this.getName(), request.getRecipient());
-			return NotificationResult.success(this.getName(), channel(), "Email sent successfully");
+			log.info("Push notification sent successfully via {} to {}", this.getName(), request.getRecipientDeviceToken());
+			return NotificationResult.success(this.getName(), channel(), "Push notification sent successfully");
 		}).orTimeout(globalConfig.getConnectionTimeout(), TimeUnit.SECONDS)
 				.exceptionally(ex -> {
-					log.error("Failed to send email via {}: {}", this.getName(), ex.getMessage());
+					log.error("Failed to send push notification via {}: {}", this.getName(), ex.getMessage());
 					return NotificationResult.failure(this.getName(), null, ex.getMessage(), channel());
 				});
 		return future.join();
 	}
-
 }

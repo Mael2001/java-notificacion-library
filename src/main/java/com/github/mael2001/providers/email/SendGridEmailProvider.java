@@ -18,7 +18,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MailtrapEmailProvider implements EmailProvider {
+public class SendGridEmailProvider implements EmailProvider {
 
 	@Getter
 	@Setter
@@ -47,7 +47,7 @@ public class MailtrapEmailProvider implements EmailProvider {
 		if (config instanceof EmailConfig emailConfig && config.getProviderName().equals(this.getName())) {
 			this.providerConfig = emailConfig;
 		} else {
-			throw new ValidationException("Invalid provider config type for MailtrapEmailProvider");
+			throw new ValidationException("Invalid provider config type for SendGridEmailProvider");
 		}
 	}
 

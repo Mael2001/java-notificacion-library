@@ -19,9 +19,9 @@ import com.github.mael2001.models.FakeRetryAwareNotifier;
 
 public class NotificationClientBuilderTest {
 
+	//Default configs to avoid boilerplate in tests
 	private static final RetryConfig DEFAULT_RETRY_CONFIG = new RetryConfig();
 	private static final GlobalConfig DEFAULT_GLOBAL_CONFIG = new GlobalConfig();
-
 
     @Test
     void build_throws_whenGlobalConfigMissing() {
@@ -109,7 +109,6 @@ public class NotificationClientBuilderTest {
             NotificationClientBuilder.create()
                 .globalConfig(DEFAULT_GLOBAL_CONFIG)
                 .retryConfig(DEFAULT_RETRY_CONFIG)
-                .eventPublisher(null)
                 .build();
 
         assertNotNull(client);

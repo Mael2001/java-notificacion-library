@@ -24,7 +24,8 @@ class DefaultNotificationClient implements NotificationClient {
 
 	private final Map<NotificationChannel, Map<String, Notifier<?>>> providers;
 	private final Map<NotificationChannel, String> defaults;
-	private final NotificationPublisher eventPublisher;
+	private final Map<String, NotificationPublisher> eventPublishers;
+
 	private final Map<Class<?>, Validator<?>> validators = Map.of(
 			EmailNotification.class, new EmailNotificationValidator(),
 			PushNotification.class, new PushNotificationValidator(),
@@ -33,10 +34,10 @@ class DefaultNotificationClient implements NotificationClient {
 	DefaultNotificationClient(
 			Map<NotificationChannel, Map<String, Notifier<?>>> providers,
 			Map<NotificationChannel, String> defaults,
-			NotificationPublisher eventPublisher) {
+			Map<String, NotificationPublisher> eventPublishers) {
 		this.providers = providers;
 		this.defaults = defaults;
-		this.eventPublisher = eventPublisher;
+		this.eventPublishers = eventPublishers;
 	}
 
 	@Override
@@ -85,19 +86,22 @@ class DefaultNotificationClient implements NotificationClient {
 			NotificationResult result = typed.send(request);
 
 			// Check if event publisher is set, if yes publish the event
-			if (eventPublisher != null) {
-				// Gemerate random id for the event
-				String eventId = java.util.UUID.randomUUID().toString();
-				// Create the event
-				NotificationEvent event = new NotificationEvent(
-						eventId,
-						result.getProvider(),
-						result.getChannel(),
-						Instant.now(),
-						result);
+			if (eventPublishers != null) {
+				//Itinerate over all event publishers and publish the event to each of them
+				for (NotificationPublisher eventPublisher : eventPublishers.values()) {
+					// Gemerate random id for the event
+					String eventId = java.util.UUID.randomUUID().toString();
+					// Create the event
+					NotificationEvent event = new NotificationEvent(
+							eventId,
+							result.getProvider(),
+							result.getChannel(),
+							Instant.now(),
+							result);
 
-				// Publish the event
-				eventPublisher.publish(event);
+					// Publish the event
+					eventPublisher.publish(event);
+				}
 			}
 			// Return the result
 			return result;

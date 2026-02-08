@@ -14,4 +14,13 @@ public class SMSNotification implements NotificationRequest {
     public NotificationChannel channel() {
         return NotificationChannel.SMS;
     }
+
+	public SMSNotification() {
+		// Default constructor
+	}
+
+	public SMSNotification(String message, String phoneNumber) {
+		this.message = message;
+		this.phoneNumber = phoneNumber;
+	}
 }

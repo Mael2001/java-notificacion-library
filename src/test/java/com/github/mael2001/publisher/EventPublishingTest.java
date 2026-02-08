@@ -6,6 +6,10 @@ import com.github.mael2001.client.NotificationClient;
 import com.github.mael2001.client.NotificationClientBuilder;
 import com.github.mael2001.config.GlobalConfig;
 import com.github.mael2001.config.RetryConfig;
+import com.github.mael2001.config.email.EmailConfig;
+import com.github.mael2001.config.push.PushConfig;
+import com.github.mael2001.config.rabbit.RabbitMQConfig;
+import com.github.mael2001.config.sms.SMSConfig;
 import com.github.mael2001.domain.NotificationEvent;
 import com.github.mael2001.domain.NotificationRequest;
 import com.github.mael2001.domain.NotificationResult;
@@ -21,6 +25,19 @@ class EventPublishingTest {
 	private static final GlobalConfig DEFAULT_GLOBAL_CONFIG = new GlobalConfig();
 	private static final RetryConfig DEFAULT_RETRY_CONFIG = new RetryConfig();
 
+	// These configs are needed to build the client, but their values don't matter
+	// for these tests since we use fakes
+	private static final EmailConfig DEFAULT_EMAIL_CONFIG = new EmailConfig("smtp.example.com", 587, "user", "pass",
+			true, true, "test@example.com", "fake-email-provider");
+	private static final SMSConfig DEFAULT_SMS_CONFIG = new SMSConfig("fake-api-key", "fake-api-url",
+			"fake-sms-provider");
+	private static final PushConfig DEFAULT_PUSH_CONFIG = new PushConfig("fake-api-key", "fake-api-url",
+			"fake-push-provider");
+
+	// Publisher Config
+	private static final RabbitMQConfig DEFAULT_RABBIT_CONFIG = new RabbitMQConfig("fake-host", 5672, "fake-user",
+			"fake-pass", "fake-virtual-host", "fake-exchange", "fake-routing-key", false, true, "fake-publisher");
+
 	@Test
 	void send_publishesEvent_withExpectedFields() throws ConfigException {
 		// Arrange
@@ -33,7 +50,11 @@ class EventPublishingTest {
 		NotificationClient client = NotificationClientBuilder.create()
 				.globalConfig(DEFAULT_GLOBAL_CONFIG)
 				.retryConfig(DEFAULT_RETRY_CONFIG)
-				.eventPublisher(publisher)
+				.registerProviderConfiguration(DEFAULT_EMAIL_CONFIG)
+				.registerProviderConfiguration(DEFAULT_SMS_CONFIG)
+				.registerProviderConfiguration(DEFAULT_PUSH_CONFIG)
+				.registerProviderConfiguration(DEFAULT_RABBIT_CONFIG)
+				.registerEventPublisher("fake-publisher", publisher)
 				.register(NotificationChannel.EMAIL, "fake", fakeEmailNotifier)
 				.defaultProvider(NotificationChannel.EMAIL, "fake")
 				.build();
@@ -80,14 +101,20 @@ class EventPublishingTest {
 		FakeNotifier fakeEmailNotifier = new FakeNotifier(NotificationChannel.EMAIL,
 				NotificationResult.success("test-provider", NotificationChannel.EMAIL, "ok"));
 
-		NotificationPublisher throwingPublisher = event -> {
-			throw new RuntimeException("boom");
+		FakeEventPublisher throwingPublisher = new FakeEventPublisher() {
+			@Override
+			public void publish(NotificationEvent event) {
+				throw new RuntimeException("Publisher failure");
+			}
 		};
-
 		NotificationClient client = NotificationClientBuilder.create()
 				.globalConfig(DEFAULT_GLOBAL_CONFIG)
 				.retryConfig(DEFAULT_RETRY_CONFIG)
-				.eventPublisher(throwingPublisher)
+				.registerProviderConfiguration(DEFAULT_EMAIL_CONFIG)
+				.registerProviderConfiguration(DEFAULT_SMS_CONFIG)
+				.registerProviderConfiguration(DEFAULT_PUSH_CONFIG)
+				.registerProviderConfiguration(DEFAULT_RABBIT_CONFIG)
+				.registerEventPublisher("fake-publisher", throwingPublisher)
 				.register(NotificationChannel.EMAIL, "fake", fakeEmailNotifier)
 				.defaultProvider(NotificationChannel.EMAIL, "fake")
 				.build();

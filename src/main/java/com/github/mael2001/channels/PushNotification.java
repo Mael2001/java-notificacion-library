@@ -15,4 +15,14 @@ public class PushNotification implements NotificationRequest {
     public NotificationChannel channel() {
         return NotificationChannel.PUSH;
     }
+
+	public PushNotification() {
+		// Default constructor
+	}
+
+	public PushNotification(String title, String message, String recipientDeviceToken) {
+		this.title = title;
+		this.message = message;
+		this.recipientDeviceToken = recipientDeviceToken;
+	}
 }

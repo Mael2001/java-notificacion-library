@@ -4,6 +4,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.UUID;
 
+import com.github.mael2001.config.GlobalConfig;
+import com.github.mael2001.config.ProviderConfig;
+import com.github.mael2001.config.RetryConfig;
 import com.github.mael2001.config.rabbit.RabbitMQConfig;
 import com.github.mael2001.domain.NotificationEvent;
 import com.github.mael2001.exceptions.RabbitException;
@@ -13,37 +16,42 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
-public class RabbitMQEventPublisher implements NotificationPublisher, AutoCloseable {
+import lombok.Getter;
+import lombok.Setter;
+
+public class RabbitMQEventPublisher implements NotificationPublisher {
 	// Implementation for publishing events to RabbitMQ would go here
-    private final RabbitMQConfig cfg;
-    private final Connection connection;
-    private final Channel channel;
+	@Getter
+	@Setter
+	private GlobalConfig globalConfig;
+	@Getter
+	@Setter
+	private RetryConfig retryConfig;
+    @Getter
+    private RabbitMQConfig providerConfig;
+	@Getter
+	@Setter
+	private String name;
 
+    private Connection connection;
+    private Channel channel;
 
-    public RabbitMQEventPublisher(RabbitMQConfig cfg) throws RabbitException {
-        this.cfg = cfg;
+    @Override
+    public void setProviderConfig(ProviderConfig config) {
+		if (config instanceof RabbitMQConfig rabbitMQConfig && config.getProviderName().equals(this.getName())) {
+			this.providerConfig = rabbitMQConfig;
+		} else {
+			throw new IllegalArgumentException("Invalid provider config type for RabbitMQEventPublisher");
+		}
+    }
 
-        try {
-            ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(cfg.getHost());
-            factory.setPort(cfg.getPort());
-            factory.setUsername(cfg.getUsername());
-            factory.setPassword(cfg.getPassword());
-            factory.setVirtualHost(cfg.getVirtualHost());
+    @Override
+    public void close() {
+        try { channel.close(); } catch (Exception ignored) {}
+        try { connection.close(); } catch (Exception ignored) {}
+    }
 
-            this.connection = factory.newConnection("motification-rabbitmq-publisher");
-            this.channel = connection.createChannel();
-
-            // Declare exchange (topic is common for eventing)
-            channel.exchangeDeclare(cfg.getExchange(), BuiltinExchangeType.TOPIC, cfg.isDurable());
-
-            if (cfg.isPublisherConfirms()) {
-                channel.confirmSelect(); // enable publisher confirms
-            }
-
-        } catch (Exception e) {
-            throw new RabbitException("Failed to initialize RabbitMQ publisher", e);
-        }
+    public RabbitMQEventPublisher() {
     }
 
     @Override
@@ -59,14 +67,14 @@ public class RabbitMQEventPublisher implements NotificationPublisher, AutoClosea
                     .build();
 
             channel.basicPublish(
-                    cfg.getExchange(),
-                    cfg.getRoutingKey(),
+                    providerConfig.getExchange(),
+                    providerConfig.getRoutingKey(),
                     true,   // mandatory: return unroutable messages (optional)
                     props,
                     body
             );
 
-            if (cfg.isPublisherConfirms()) {
+            if (providerConfig.isPublisherConfirms()) {
                 // blocks until broker acks publish (simple + reliable)
                 channel.waitForConfirmsOrDie(5_000);
             }
@@ -104,9 +112,5 @@ public class RabbitMQEventPublisher implements NotificationPublisher, AutoClosea
         return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
     }
 
-    @Override
-    public void close() {
-        try { channel.close(); } catch (Exception ignored) {}
-        try { connection.close(); } catch (Exception ignored) {}
-    }
+
 }

@@ -16,4 +16,14 @@ public class EmailNotification implements NotificationRequest {
         return NotificationChannel.EMAIL;
     }
 
+	public EmailNotification() {
+		// Default constructor
+	}
+
+	public EmailNotification(String recipient, String subject, String body) {
+		this.recipient = recipient;
+		this.subject = subject;
+		this.body = body;
+	}
+
 }
